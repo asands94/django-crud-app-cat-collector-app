@@ -1,7 +1,16 @@
 from django.shortcuts import render
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .models import Cat
 
 # Create your views here.
+
+
+def home(request):
+    return render(request, 'home.html')
+
+
+def about(request):
+    return render(request, 'about.html')
 
 
 def cat_index(request):
@@ -14,9 +23,16 @@ def cat_detail(request, cat_id):
     return render(request, 'cats/detail.html', {'cat': cat})
 
 
-def home(request):
-    return render(request, 'home.html')
+class CatCreate(CreateView):
+    model = Cat
+    fields = '__all__'
 
 
-def about(request):
-    return render(request, 'about.html')
+class CatUpdate(UpdateView):
+    model = Cat
+    fields = ['breed', 'description', 'age']
+
+
+class CatDelete(DeleteView):
+    model = Cat
+    success_url = '/cats/'
