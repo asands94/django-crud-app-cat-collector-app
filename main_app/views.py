@@ -54,16 +54,6 @@ def add_feeding(request, pk):
     return redirect('cat-detail', cat_id=pk)
 
 
-# def add_feeding(request, cat_id):
-#     form = FeedingForm(request.POST)
-
-#     if form.is_valid():
-
-#         new_feeding = form.save(commit=False)
-#         new_feeding.cat_id = cat_id
-#         new_feeding.save()
-#     return redirect('cat-detail', cat_id=cat_id)
-
 class ToyCreate(CreateView):
     model = Toy
     fields = '__all__'
