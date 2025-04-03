@@ -20,17 +20,15 @@ class CatList(ListView):
     template_name = 'cats/index.html'
 
 
-# def cat_index(request):
-#     cats = Cat.objects.all()
-#     return render(request, 'cats/index.html', {'cats': cats})
-
-
-def cat_detail(request, cat_id):
-    cat = Cat.objects.get(id=cat_id)
+class CatDetail(DetailView):
+    model = Cat
+    template_name = 'cats/detail.html'
     feeding_form = FeedingForm()
-    return render(request, 'cats/detail.html', {
-        'cat': cat, 'feeding_form': feeding_form
-    })
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['feeding_form'] = self.feeding_form
+        return context
 
 
 class CatCreate(CreateView):
@@ -56,7 +54,7 @@ def add_feeding(request, pk):
         new_feeding = form.save(commit=False)
         new_feeding.cat_id = pk
         new_feeding.save()
-    return redirect('cat-detail', cat_id=pk)
+    return redirect('cat-detail', pk=pk)
 
 
 class ToyCreate(CreateView):
