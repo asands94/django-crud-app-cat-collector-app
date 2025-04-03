@@ -42,6 +42,19 @@
                 alt="A kabob of kittens"
             />
         </div>
+        <h3>Add a Feeding</h3>
+
+        <form
+            method="post"
+            action="{% url 'add-feeding' cat.id %}"
+            class="subsection-content"
+            autocomplete="off"
+        >
+            {% csrf_token %} {{ feeding_form.as_p }}
+            <button type="submit" class="btn submit">Add Feeding</button>
+        </form>
+        <h3>Past Feedings</h3>
+        {% if cat.feeding_set.all.count %}
         <table>
             <thead>
                 <tr>
@@ -58,6 +71,11 @@
                 {% endfor %}
             </tbody>
         </table>
+        {% else %}
+        <div class="subsection-content">
+            <p>⚠️ {{cat.name}} has not been fed!</p>
+        </div>
+        {% endif %}
     </section>
 </div>
 
