@@ -1,7 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect, reverse
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
-from .models import Cat, Toy
+from .models import Cat, Toy, Feeding
 from .forms import FeedingForm
 
 # Create your views here.
@@ -25,6 +25,7 @@ class CatDetail(DetailView):
     template_name = 'cats/detail.html'
     feeding_form = FeedingForm()
 
+# https://docs.djangoproject.com/en/5.1/ref/class-based-views/mixins-simple/#django.views.generic.base.ContextMixin.get_context_data
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['feeding_form'] = self.feeding_form
@@ -46,15 +47,17 @@ class CatDelete(DeleteView):
     success_url = '/cats/'
 
 
-def add_feeding(request, pk):
-    form = FeedingForm(request.POST)
+class FeedingCreate(CreateView):
+    model = Feeding
+    template_name = 'cats/detail.html'
+    form_class = FeedingForm
 
-    if form.is_valid():
+    def form_valid(self, form):
+        form.instance.cat = get_object_or_404(Cat, pk=self.kwargs['pk'])
+        return super().form_valid(form)
 
-        new_feeding = form.save(commit=False)
-        new_feeding.cat_id = pk
-        new_feeding.save()
-    return redirect('cat-detail', pk=pk)
+    def get_success_url(self):
+        return reverse('cat-detail', kwargs={'pk': self.kwargs['pk']})
 
 
 class ToyCreate(CreateView):
