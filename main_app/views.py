@@ -1,4 +1,5 @@
-from django.shortcuts import get_object_or_404, render, redirect, reverse
+from django.shortcuts import get_object_or_404, render, redirect
+from django.urls import reverse
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from .models import Cat, Toy, Feeding
@@ -56,8 +57,10 @@ class FeedingCreate(CreateView):
         form.instance.cat = get_object_or_404(Cat, pk=self.kwargs['pk'])
         return super().form_valid(form)
 
+# https://docs.djangoproject.com/en/5.1/topics/class-based-views/generic-editing/#id4
     def get_success_url(self):
-        return reverse('cat-detail', kwargs={'pk': self.kwargs['pk']})
+        # self.object refers to the new Feeding
+        return reverse('cat-detail', kwargs={'pk': self.object.cat.pk})
 
 
 class ToyCreate(CreateView):
